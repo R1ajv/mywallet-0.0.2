@@ -2,7 +2,8 @@
 My wallet application with OAuth2.0 implementation with MongoDb.
 
 
-How to do:
+How to do:---------------------------------------------
+
 
 Basic Requisites:
 1.	This is to create APIs with OAuth 2.0 enabled.  There should a first login with API key and password, and each request must be sent with a Bearer token.
