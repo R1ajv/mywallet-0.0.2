@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +30,8 @@ public class CustomerController{
 	//private CustomerDAO customerDao;
 	
 	@GetMapping("/welcome")
-	public String welcome() {
+	public String welcome(OAuth2AuthenticationToken token) {
+		System.out.println(token.getPrincipal());
 		return "Welcome to Security Wallet App";
 	}
 	

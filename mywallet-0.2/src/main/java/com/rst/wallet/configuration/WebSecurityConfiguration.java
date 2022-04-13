@@ -1,62 +1,49 @@
 package com.rst.wallet.configuration;
 
-import javax.sql.DataSource;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.config.oauth2.client.CommonOAuth2Provider;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
 
 @Configuration
-@Order(1)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
-
-	@Autowired
-	@Qualifier("oauth2authSuccessHandler")
-	private AuthenticationSuccessHandler oauth2authSuccessHandler;
-
+	
 	protected void configure(HttpSecurity http) throws Exception {
-		/*
-		 * http .authorizeRequests() .anyRequest().authenticated() .and() .httpBasic();
-		 */
-
-		http.authorizeRequests().antMatchers("/register", "/login", "/h2-console/**", "/mylogin", "/verify/**")
-				.permitAll().anyRequest().authenticated().and().formLogin().loginPage("/login").and().csrf().disable()
-				.rememberMe().key("myremembermekey").and().logout().logoutUrl("/logout").logoutSuccessUrl("/login")
-				.deleteCookies("remember-me")
-
-				.and().oauth2Login().loginPage("/login").successHandler(oauth2authSuccessHandler);
-
-		http.headers().frameOptions().disable();
+		http.authorizeRequests().anyRequest().authenticated().and().oauth2Login();
 	}
 
-	@Override
-	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/css/**", "/webjars/**");
-	}
+	/*
+	 * private ClientRegistration clientRegistration() { return
+	 * CommonOAuth2Provider.GITHUB.getBuilder("github").clientId(
+	 * "6acc0802574d5b821f11")
+	 * .clientSecret("190e1a711bcb7f93c8ea39040d448286e36ce1fe").build(); }
+	 */
 
-	@Autowired
-	private DataSource dataSource;
+	/*
+	 * @Bean public ClientRegistrationRepository clientRepository() {
+	 * ClientRegistration clientReg = clientRegistration(); return new
+	 * InMemoryClientRegistrationRepository(clientReg); }
+	 */
+	
+	/*
+	 * private ClientRegistration clientRegistration() { ClientRegistration cr =
+	 * ClientRegistration.withRegistrationId("github").clientId(
+	 * "6acc0802574d5b821f11")
+	 * .clientSecret("190e1a711bcb7f93c8ea39040d448286e36ce1fe").scope(new String[]
+	 * { "read:user" }) .authorizationUri("http://github.com/login/oauth/authorize")
+	 * .tokenUri("https://github.com/login/oauth/access_token").userInfoUri(
+	 * "https://api.github.com/user")
+	 * .userNameAttributeName("id").clientName("GitHub")
+	 * .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+	 * .redirectUriTemplate("{baseUrl}/{action}/oauth2/code/{registrationId}").build
+	 * (); return cr; }
+	 */
 
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.jdbcAuthentication().dataSource(dataSource).passwordEncoder(getPasswordEncoder());
-	}
-
-	@Bean
-	public PasswordEncoder getPasswordEncoder() {
-		DelegatingPasswordEncoder encoder = (DelegatingPasswordEncoder) PasswordEncoderFactories
-				.createDelegatingPasswordEncoder();
-		return encoder;
-	}
-
+	
+	
 }
