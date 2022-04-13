@@ -1,72 +1,63 @@
 package com.rst.wallet.model;
 
 import java.util.Date;
-import java.util.Set;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.persistence.JoinColumn;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import javax.validation.constraints.*;
 
 
-@Entity
-@Table(name="customer")
+@Document(collection = "Customer")
 public class Customer {
-	
-	@Id
-	@NotNull
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long customerId;
-	
-	@Column(nullable = false , name = "firstName" , length = 45)
-	@NotNull
-	private String firstName;
-	
-	@Column(nullable = false , name = "lastName" , length = 45)
-	@NotNull
-	private String lastName;
-	
-	@Column(nullable = false , name = "email" , length = 45)
-	@NotNull
-	private String email;
-	
-	@Column(nullable = false , name = "date" , length = 45)
-	@NotNull
-	private Date date ;
-	
-	@Column(nullable = false , name = "phoneNumber" , length = 10)
-	@NotNull
-	@Valid
-	private long phoneNumber;
-	
-	@Column(nullable = false , name = "address" , length = 45)
-	@NotNull
-	private String postCode;
 
-	@Column(name="AUTHORITY")
-	@CollectionTable(name = "AUTHORITIES",joinColumns = {@JoinColumn(name="USERNAME")})
-	private Set<String> authorities;
-	
+    @Transient
+    public static final String SEQUENCE_NAME = "customer_sequence";
+
+    @Id
+    long customerId;
+    @NotBlank(message = "First name should not be empty")
+    String firstName;
+    @NotBlank(message = "Last name should not be empty")
+    String lastName;
+    @Email(message = "should be proper email address")
+    String email;
+    @JsonFormat(pattern = "dd-MM-yyyy")
+    Date dob;
+    @Digits(integer = 10, fraction = 0, message = "Phone number should be 10 digits")
+    Long phoneNumber;
+    
+    @Pattern(regexp = "[a-zA-Z0-9]", message = "Post code should be alpha numeric")
+    String postCode;
+    
+    @Pattern(regexp = "[a-zA-Z0-9]", message = "address should be alpha numeric")
+    private String address;
+    
+    @Pattern(regexp = "[a-zA-Z0-9]")
+    String password;
+
 	public Customer() {
-		
-	}
-	
-	public Customer(long customerId, String firstName, String lastName, String email, Date date, long phoneNumber,
-			String postCode) {
 		super();
-		this.customerId = customerId;
+	}
+
+	public Customer(@NotBlank(message = "First name should not be empty") String firstName,
+			@NotBlank(message = "Last name should not be empty") String lastName,
+			@Email(message = "should be proper email address") String email, Date dob,
+			@Digits(integer = 10, fraction = 0, message = "Phone number should be 10 digits") Long phoneNumber,
+			@Pattern(regexp = "[a-zA-Z0-9]", message = "Post code should be alpha numeric") String postCode,
+			@Pattern(regexp = "[a-zA-Z0-9]", message = "address should be alpha numeric") String address,
+			@Pattern(regexp = "[a-zA-Z0-9]") String password) {
+		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
-		this.date = date;
+		this.dob = dob;
 		this.phoneNumber = phoneNumber;
 		this.postCode = postCode;
+		this.address = address;
+		this.password = password;
 	}
 
 	public long getCustomerId() {
@@ -101,19 +92,19 @@ public class Customer {
 		this.email = email;
 	}
 
-	public Date getDate() {
-		return date;
+	public Date getDob() {
+		return dob;
 	}
 
-	public void setDate(Date date) {
-		this.date = date;
+	public void setDob(Date dob) {
+		this.dob = dob;
 	}
 
-	public long getPhoneNumber() {
+	public Long getPhoneNumber() {
 		return phoneNumber;
 	}
 
-	public void setPhoneNumber(long phoneNumber) {
+	public void setPhoneNumber(Long phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
 
@@ -125,19 +116,27 @@ public class Customer {
 		this.postCode = postCode;
 	}
 
-	
-	public Set<String> getAuthorities() {
-		return authorities;
+	public String getAddress() {
+		return address;
 	}
 
-	public void setAuthorities(Set<String> authorities) {
-		this.authorities = authorities;
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	@Override
 	public String toString() {
 		return "Customer [customerId=" + customerId + ", firstName=" + firstName + ", lastName=" + lastName + ", email="
-				+ email + ", date=" + date + ", phoneNumber=" + phoneNumber + ", postCode=" + postCode + "]";
+				+ email + ", dob=" + dob + ", phoneNumber=" + phoneNumber + ", postCode=" + postCode + ", address="
+				+ address + ", password=" + password + "]";
 	}
 
 }
