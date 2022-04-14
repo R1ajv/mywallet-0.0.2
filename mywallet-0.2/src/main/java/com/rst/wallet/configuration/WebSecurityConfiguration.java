@@ -17,18 +17,18 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().anyRequest().authenticated().and().oauth2Login();
 	}
 
-	/*
-	 * private ClientRegistration clientRegistration() { return
-	 * CommonOAuth2Provider.GITHUB.getBuilder("github").clientId(
-	 * "6acc0802574d5b821f11")
-	 * .clientSecret("190e1a711bcb7f93c8ea39040d448286e36ce1fe").build(); }
-	 */
+	
+	  private ClientRegistration clientRegistration() { return
+	  CommonOAuth2Provider.GITHUB.getBuilder("github").clientId(
+	  "6acc0802574d5b821f11")
+	  .clientSecret("190e1a711bcb7f93c8ea39040d448286e36ce1fe").build(); }
+	 
 
-	/*
-	 * @Bean public ClientRegistrationRepository clientRepository() {
-	 * ClientRegistration clientReg = clientRegistration(); return new
-	 * InMemoryClientRegistrationRepository(clientReg); }
-	 */
+	
+	  @Bean public ClientRegistrationRepository clientRepository() {
+	  ClientRegistration clientReg = clientRegistration(); return new
+	  InMemoryClientRegistrationRepository(clientReg); }
+	 
 	
 	/*
 	 * private ClientRegistration clientRegistration() { ClientRegistration cr =
